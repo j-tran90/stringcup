@@ -1,0 +1,7 @@
+{
+  "sender": "Alice Johnson",
+  "recipients": ["John Doe"],
+  "timestamp": "2025-02-24T15:00:00Z",
+  "message": "OMW",
+  "senderAvatar": "https://i.pravatar.cc/150?img=2"
+}

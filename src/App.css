@@ -1,14 +1,29 @@
 #root {
-  /* max-width: 1280px;
-  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
   padding: 2rem;
-  text-align: center; */
+  margin-top: 50px;
+
+  margin-left: 240px;
+  /* text-align: center; */
 }
+
+.MuiDrawer-root {
+  z-index: 1200; /* Ensure drawer is above other content */
+}
+
+.MuiDrawer-paper {
+  width: 240px; /* Adjust based on your drawer width */
+}
+
+/* .main-content {
+} */
 
 .card {
   padding: 2em;
 }
 
-* {
+/* * {
   border: 1px solid red;
-}
+} */

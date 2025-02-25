@@ -1,0 +1,7 @@
+{
+  "sender": "John Doe",
+  "recipients": ["Jane Smith", "Alice Johnson"],
+  "timestamp": "2025-02-24T14:30:00Z",
+  "message": "Hey everyone, let's have a quick meeting at 3 PM.",
+  "senderAvatar": "https://i.pravatar.cc/150?img=1"
+}
