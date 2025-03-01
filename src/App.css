@@ -5,7 +5,7 @@
   padding: 2rem;
   margin-top: 50px;
 
-  margin-left: 240px;
+  /* margin-left: 240px; */
   /* text-align: center; */
 }
 
@@ -24,6 +24,6 @@
   padding: 2em;
 }
 
-/* * {
+* {
   border: 1px solid red;
-} */
+}

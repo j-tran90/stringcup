@@ -18,7 +18,7 @@ import message2 from "../../catfish/message2.json";
 
 const DirectMessageList = ({ messages }) => {
   return (
-    <div>
+    <Box sx={{ overflowY: "auto", flex: 1, p: 2 }}>
       {messages.map((msg, index) => (
         <Card
           key={index}
@@ -56,7 +56,7 @@ const DirectMessageList = ({ messages }) => {
           </CardContent>
         </Card>
       ))}
-    </div>
+    </Box>
   );
 };
 
@@ -104,11 +104,23 @@ export default function App() {
 
   return (
     <Box sx={{ display: "flex", flexDirection: "column", height: "100vh" }}>
-      <Box sx={{ flex: 1, overflowY: "auto" }}>
-        <DirectMessageList messages={messages} />
-      </Box>
+      {/* Messages List with scrolling */}
+      <DirectMessageList messages={messages} />
 
-      <Box sx={{ display: "flex", alignItems: "center", p: 2 }}>
+      {/* Fixed Input Field at Bottom */}
+      <Box
+        sx={{
+          position: "fixed",
+          bottom: 0,
+          left: 0,
+          right: 0,
+          display: "flex",
+          alignItems: "center",
+          p: 2,
+          backgroundColor: "white",
+          boxShadow: "0 -2px 4px rgba(0, 0, 0, 0.1)",
+        }}
+      >
         <TextField
           fullWidth
           variant='outlined'
