@@ -79,6 +79,7 @@ DirectMessageList.propTypes = {
 export default function App() {
   const [messages, setMessages] = useState([]);
   const [newMessage, setNewMessage] = useState(""); // New message input state
+  const [isDrawerOpen, setIsDrawerOpen] = useState(true); // Track drawer state
 
   useEffect(() => {
     // Import the JSON files directly into the component
@@ -103,42 +104,51 @@ export default function App() {
   };
 
   return (
-    <Box sx={{ display: "flex", flexDirection: "column", height: "100vh" }}>
-      {/* Messages List with scrolling */}
-      <DirectMessageList messages={messages} />
-
-      {/* Fixed Input Field at Bottom */}
+    <>
       <Box
-      id = "input-container"
-        sx={{
-          position: "fixed",
-          bottom: 0,
-          right: 0,
-          display: "flex",
-          alignItems: "center",
-          p: 2,
-          backgroundColor: "white",
-          boxShadow: "0 -2px 4px rgba(0, 0, 0, 0.1)",
-          zIndex: 1000,
-        }}
+        className='input-container'
+        sx={{ display: "flex", flexDirection: "column", height: "100vh" }}
       >
-        <TextField
-          fullWidth
-          variant='outlined'
-          placeholder='Type your message...'
-          value={newMessage}
-          onChange={(e) => setNewMessage(e.target.value)}
-          sx={{ mr: 1 }}
-        />
-        <Button
-          variant='contained'
-          color='primary'
-          onClick={handleSendMessage}
-          disabled={!newMessage.trim()}
+        {/* Messages List with scrolling */}
+        <DirectMessageList messages={messages} />
+
+        {/* Fixed Input Field at Bottom */}
+        <Box
+          sx={(theme) => ({
+            position: "fixed",
+            bottom: 0,
+            left: isDrawerOpen ? 240 : 0, // Adjust based on drawer state
+            width: isDrawerOpen ? "calc(100% - 240px)" : "100%", // Ensure correct width
+            display: "flex",
+            alignItems: "center",
+            p: 2,
+            backgroundColor: "white",
+            zIndex: 1,
+
+            [theme.breakpoints.down("sm")]: {
+              left: 0,
+              width: "100%", // Full width on small screens
+            },
+          })}
         >
-          Send
-        </Button>
+          <TextField
+            fullWidth
+            variant='outlined'
+            placeholder='Type your message...'
+            value={newMessage}
+            onChange={(e) => setNewMessage(e.target.value)}
+            sx={{ mr: 1 }}
+          />
+          <Button
+            variant='contained'
+            color='primary'
+            onClick={handleSendMessage}
+            disabled={!newMessage.trim()}
+          >
+            Send
+          </Button>
+        </Box>
       </Box>
-    </Box>
+    </>
   );
 }
