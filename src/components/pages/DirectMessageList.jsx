@@ -109,16 +109,17 @@ export default function App() {
 
       {/* Fixed Input Field at Bottom */}
       <Box
+      id = "input-container"
         sx={{
           position: "fixed",
           bottom: 0,
-          left: 0,
           right: 0,
           display: "flex",
           alignItems: "center",
           p: 2,
           backgroundColor: "white",
           boxShadow: "0 -2px 4px rgba(0, 0, 0, 0.1)",
+          zIndex: 1000,
         }}
       >
         <TextField

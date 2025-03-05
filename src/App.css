@@ -4,8 +4,7 @@
   min-height: 100vh;
   padding: 2rem;
   margin-top: 50px;
-
-  /* margin-left: 240px; */
+  margin-left: 240px;
   /* text-align: center; */
 }
 
@@ -26,4 +25,35 @@
 
 * {
   border: 1px solid red;
+}
+
+/* Styles for the input box container */
+.input-container {
+  /* position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  display: flex;
+  align-items: center;
+  padding: 1rem;
+  background-color: white;
+  box-shadow: 0 -2px 4px rgba(0, 0, 0, 0.1);
+  z-index: 1000; Ensure the input box is above other content */
+  margin-left: 240px;
+}
+
+/* Media query for mobile devices */
+@media (max-width: 768px) {
+  #root {
+    margin-left: 0;
+    padding: 1rem;
+  }
+
+  .MuiDrawer-paper {
+    width: 100%; /* Full width for mobile */
+  }
+
+  .input-container {
+    padding: 0.5rem; /* Adjust padding for mobile */
+  }
 }
