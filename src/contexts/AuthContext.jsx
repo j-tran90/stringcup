@@ -1,11 +1,17 @@
+// AuthContext.jsx
+
 import React, { useContext, useEffect, useState } from "react";
-import { auth } from "../config/Firebase";
 import {
   getAuth,
+  createUserWithEmailAndPassword,
+  signInWithEmailAndPassword,
+  signOut,
+  onAuthStateChanged,
   deleteUser,
   GoogleAuthProvider,
   signInWithPopup,
 } from "firebase/auth";
+import app from "../config/Firebase";
 
 const AuthContext = React.createContext();
 
@@ -13,58 +19,60 @@ export function useAuth() {
   return useContext(AuthContext);
 }
 
-export default function AuthProvider({ children }) {
-  const [currentUser, setCurrentUser] = useState();
-  const [loading, setLoading] = useState(true);
-  const provider = new GoogleAuthProvider();
+const provider = new GoogleAuthProvider();
+const authInstance = getAuth(app);
 
-  function register(email, password) {
-    return auth
-      .createUserWithEmailAndPassword(email, password)
-      .then(function (result) {
-        return result.user.updateProfile({
-          displayName: document
-            .getElementById("name")
-            .value.replace(/(^\w{1})|(\s+\w{1})/g, (value) =>
-              value.toUpperCase()
-            ),
-        });
-      })
-      .catch(function (error) {
-        console.log(error);
+export function register(email, password) {
+  return createUserWithEmailAndPassword(authInstance, email, password)
+    .then((result) => {
+      return result.user.updateProfile({
+        displayName: document
+          .getElementById("name")
+          .value.replace(/(^\w{1})|(\s+\w{1})/g, (value) =>
+            value.toUpperCase()
+          ),
       });
-  }
-
-  function login(email, password) {
-    return auth.signInWithEmailAndPassword(email, password);
-  }
-
-  const googleLogin = () => {
-    const auth2 = getAuth();
-
-    signInWithPopup(auth2, provider).then((result) => {
-      const user = result.user;
-      console.log(user);
+    })
+    .catch((error) => {
+      console.error(error);
     });
-  };
+}
 
-  function logout() {
-    return auth.signOut();
-  }
+export function login(email, password) {
+  return signInWithEmailAndPassword(authInstance, email, password);
+}
 
-  function deleteAccount() {
-    const auth2 = getAuth();
-    const user = auth2.currentUser;
+export const googleLogin = () => {
+  signInWithPopup(authInstance, provider)
+    .then((result) => {
+      console.log(result.user);
+    })
+    .catch((error) => {
+      console.error("Google Sign-in Failed:", error);
+    });
+};
 
-    deleteUser(user || currentUser)
-      .then(() => {})
+export function logout() {
+  return signOut(authInstance);
+}
+
+export function deleteAccount() {
+  const user = authInstance.currentUser;
+  if (user) {
+    deleteUser(user)
+      .then(() => console.log("User deleted successfully"))
       .catch((error) => {
-        ("Deletion Failed");
+        console.error("Deletion Failed:", error);
       });
   }
+}
+
+export default function AuthProvider({ children }) {
+  const [currentUser, setCurrentUser] = useState(null);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const unsubscribe = auth.onAuthStateChanged((user) => {
+    const unsubscribe = onAuthStateChanged(authInstance, (user) => {
       setCurrentUser(user);
       setLoading(false);
     });

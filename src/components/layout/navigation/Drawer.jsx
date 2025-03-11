@@ -9,7 +9,8 @@ import IconButton from "@mui/material/IconButton";
 import MenuIcon from "@mui/icons-material/Menu";
 import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
-import Users from "./Users";
+import UserList from "./UserList";
+import User from "../User";
 
 const drawerWidth = 240;
 
@@ -37,7 +38,7 @@ function ResponsiveDrawer(props) {
     <div>
       <Toolbar />
       <Divider />
-      <Users />
+      <UserList />
     </div>
   );
 
@@ -68,6 +69,7 @@ function ResponsiveDrawer(props) {
           <Typography variant='h6' noWrap component='div'>
             String Cup
           </Typography>
+          <User />
         </Toolbar>
       </AppBar>
       <Box
