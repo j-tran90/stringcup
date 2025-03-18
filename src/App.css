@@ -19,9 +19,9 @@ html {
   padding: 2em;
 }
 
-* {
+/* * {
   border: 1px solid red;
-}
+} */
 
 /* Styles for the input box container */
 .input-container {

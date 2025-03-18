@@ -107,7 +107,7 @@ export default function App() {
     <>
       <Box
         className='input-container'
-        sx={{ display: "flex", flexDirection: "column", height: "100vh" }}
+        sx={{ display: "flex", flexDirection: "column", height: "80vh" }}
       >
         {/* Messages List with scrolling */}
         <DirectMessageList messages={messages} />
@@ -152,3 +152,4 @@ export default function App() {
     </>
   );
 }
+

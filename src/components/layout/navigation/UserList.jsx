@@ -7,7 +7,7 @@ import ListItemText from "@mui/material/ListItemText";
 import MailIcon from "@mui/icons-material/Mail";
 
 function Users() {
-  const users = ["Lester", "User2", "User3", "User4", "User5"];
+  const users = ["Lester", "Katie", "John", "Jane", "Doe"];
 
   return (
     <List>

@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { useAuth } from "../../contexts/AuthContext";
+import { Box } from "@mui/material";
 
 export default function UserComponent() {
   const [user, setUser] = useState(null);
@@ -13,21 +14,23 @@ export default function UserComponent() {
   }, [currentUser]);
 
   return (
-    <div style={{ textAlign: "center", marginTop: "20px" }}>
+    <Box style={{ textAlign: "center", right: "0", position: "absolute", paddingRight: "24px"}}>
       {user ? (
-        <div>
-          <h3>Welcome, {user.displayName}!</h3>
+        <Box>
           <img
             src={user.photoURL}
             alt='User Avatar'
-            style={{ borderRadius: "50%", width: "100px", height: "100px" }}
+            style={{
+              borderRadius: "50%",
+              width: "auto",
+              maxHeight: "30px",
+            }}
           />
-          <br />
-          <button onClick={logout}>Sign Out</button>
-        </div>
+          {/* <button onClick={logout}>Sign Out</button> */}
+        </Box>
       ) : (
         <button onClick={googleLogin}>Sign in with Google</button>
       )}
-    </div>
+    </Box>
   );
 }
