@@ -1,8 +1,5 @@
-// AuthContext.jsx
-
 import React, { useContext, useEffect, useState } from "react";
 import {
-  getAuth,
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
   signOut,
@@ -11,7 +8,7 @@ import {
   GoogleAuthProvider,
   signInWithPopup,
 } from "firebase/auth";
-import app from "../config/Firebase";
+import { auth } from "../config/Firebase"; // ✅ Correct import
 
 const AuthContext = React.createContext();
 
@@ -20,10 +17,9 @@ export function useAuth() {
 }
 
 const provider = new GoogleAuthProvider();
-const authInstance = getAuth(app);
 
 export function register(email, password) {
-  return createUserWithEmailAndPassword(authInstance, email, password)
+  return createUserWithEmailAndPassword(auth, email, password)
     .then((result) => {
       return result.user.updateProfile({
         displayName: document
@@ -39,11 +35,11 @@ export function register(email, password) {
 }
 
 export function login(email, password) {
-  return signInWithEmailAndPassword(authInstance, email, password);
+  return signInWithEmailAndPassword(auth, email, password);
 }
 
 export const googleLogin = () => {
-  signInWithPopup(authInstance, provider)
+  signInWithPopup(auth, provider)
     .then((result) => {
       console.log(result.user);
     })
@@ -53,11 +49,11 @@ export const googleLogin = () => {
 };
 
 export function logout() {
-  return signOut(authInstance);
+  return signOut(auth);
 }
 
 export function deleteAccount() {
-  const user = authInstance.currentUser;
+  const user = auth.currentUser;
   if (user) {
     deleteUser(user)
       .then(() => console.log("User deleted successfully"))
@@ -72,7 +68,7 @@ export default function AuthProvider({ children }) {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(authInstance, (user) => {
+    const unsubscribe = onAuthStateChanged(auth, (user) => {
       setCurrentUser(user);
       setLoading(false);
     });

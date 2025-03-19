@@ -14,7 +14,14 @@ export default function UserComponent() {
   }, [currentUser]);
 
   return (
-    <Box style={{ textAlign: "center", right: "0", position: "absolute", paddingRight: "24px"}}>
+    <Box
+      style={{
+        textAlign: "center",
+        right: "0",
+        position: "absolute",
+        paddingRight: "24px",
+      }}
+    >
       {user ? (
         <Box>
           <img
