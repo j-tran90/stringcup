@@ -1,14 +1,18 @@
-import InboxIcon from "@mui/icons-material/MoveToInbox";
 import List from "@mui/material/List";
 import ListItem from "@mui/material/ListItem";
 import ListItemButton from "@mui/material/ListItemButton";
-import ListItemIcon from "@mui/material/ListItemIcon";
 import ListItemText from "@mui/material/ListItemText";
-import MailIcon from "@mui/icons-material/Mail";
 import { useEffect, useState } from "react";
 import { onAuthStateChanged } from "firebase/auth";
 import { auth } from "../../../config/Firebase"; // Import the auth instance
-import { collection, getDocs, getFirestore, setDoc, doc} from "firebase/firestore"; // Firestore methods
+import {
+  collection,
+  getDocs,
+  getFirestore,
+  setDoc,
+  doc,
+} from "firebase/firestore"; // Firestore methods
+import { Avatar } from "@mui/material";
 
 const db = getFirestore(); // Get Firestore instance
 
@@ -50,9 +54,9 @@ function UserList() {
     const fetchUsers = async () => {
       try {
         const querySnapshot = await getDocs(collection(db, "users")); // Fetch "users" collection
-        const usersData = querySnapshot.docs.map(doc => ({
+        const usersData = querySnapshot.docs.map((doc) => ({
           id: doc.id, // Document ID as UID
-          ...doc.data() // Spread user data (name, email, avatar)
+          ...doc.data(), // Spread user data (name, email, avatar)
         }));
         setUsers(usersData); // Set the users state with fetched data
       } catch (error) {
@@ -64,18 +68,22 @@ function UserList() {
   }, []); // Empty dependency array to run this effect only once when component mounts
 
   return (
-    <List>
-      {users.map((user, index) => (
-        <ListItem key={user.id} disablePadding>
-          <ListItemButton>
-            <ListItemIcon>
-              {index % 2 === 0 ? <InboxIcon /> : <MailIcon />}
-            </ListItemIcon>
-            <ListItemText primary={user.name || "No Name"} /> {/* Display user name or fallback */}
-          </ListItemButton>
-        </ListItem>
-      ))}
-    </List>
+    <>
+      <List>
+        {users.map((user) => (
+          <ListItem key={user.id} disablePadding>
+            <ListItemButton data-uid={user.id}>
+              <Avatar
+                src={user.photoURL}
+                alt={user.name}
+                sx={{ marginRight: 2 }}
+              />
+              <ListItemText primary={user.name || "No Name"} />
+            </ListItemButton>
+          </ListItem>
+        ))}
+      </List>
+    </>
   );
 }
 

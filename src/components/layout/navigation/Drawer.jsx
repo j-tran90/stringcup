@@ -11,6 +11,7 @@ import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
 import UserList from "./UserList";
 import User from "../User";
+import Compose from "../Compose";
 
 const drawerWidth = 240;
 
@@ -38,6 +39,7 @@ function ResponsiveDrawer(props) {
     <div>
       <Toolbar />
       <Divider />
+      <Compose />
       <UserList />
     </div>
   );
