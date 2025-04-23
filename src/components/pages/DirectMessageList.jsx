@@ -11,10 +11,14 @@ import {
   Box,
 } from "@mui/material";
 import { format } from "date-fns";
-
-// Import JSON files from the catfish folder
-import message1 from "../../catfish/message1.json";
-import message2 from "../../catfish/message2.json";
+import { db } from "../../config/firebase";
+import {
+  collection,
+  onSnapshot,
+  addDoc,
+  serverTimestamp,
+} from "firebase/firestore";
+import { getAuth } from "firebase/auth";
 
 const DirectMessageList = ({ messages }) => {
   return (
@@ -28,7 +32,7 @@ const DirectMessageList = ({ messages }) => {
             borderRadius: 2,
             boxShadow: "none",
             borderLeft: 3,
-            borderColor: index % 2 === 0 ? "#7289da" : "#99aab5", // Discord-like color distinction
+            borderColor: index % 2 === 0 ? "#7289da" : "#99aab5",
             backgroundColor: index % 2 === 0 ? "#f3f3f8" : "white",
           }}
         >
@@ -42,7 +46,12 @@ const DirectMessageList = ({ messages }) => {
                   {msg.sender}
                 </Typography>
                 <Typography variant='body2' color='textSecondary'>
-                  {format(new Date(msg.timestamp), "MMM dd, yyyy - HH:mm")}
+                  {msg.timestamp?.toDate
+                    ? format(
+                        new Date(msg.timestamp.toDate()),
+                        "MMM dd, yyyy - HH:mm"
+                      )
+                    : "N/A"}
                 </Typography>
               </div>
             </div>
@@ -65,11 +74,7 @@ DirectMessageList.propTypes = {
     PropTypes.shape({
       sender: PropTypes.string.isRequired,
       recipients: PropTypes.arrayOf(PropTypes.string).isRequired,
-      timestamp: PropTypes.oneOfType([
-        PropTypes.string,
-        PropTypes.number,
-        PropTypes.instanceOf(Date),
-      ]).isRequired,
+      timestamp: PropTypes.object, // Firestore timestamp
       message: PropTypes.string.isRequired,
       senderAvatar: PropTypes.string.isRequired,
     })
@@ -78,28 +83,63 @@ DirectMessageList.propTypes = {
 
 export default function App() {
   const [messages, setMessages] = useState([]);
-  const [newMessage, setNewMessage] = useState(""); // New message input state
-  const [isDrawerOpen, setIsDrawerOpen] = useState(true); // Track drawer state
+  const [newMessage, setNewMessage] = useState("");
+  const [isDrawerOpen, setIsDrawerOpen] = useState(true);
 
   useEffect(() => {
-    // Import the JSON files directly into the component
-    const allMessages = [message1, message2]; // Add more as needed
-    setMessages(allMessages);
+    const auth = getAuth();
+    const currentUser = auth.currentUser;
+
+    if (!currentUser) return;
+
+    const chatroomId = "selected_chatroom_id"; // Replace with dynamic chatroom logic
+    const messagesRef = collection(db, "chatrooms", chatroomId, "messages");
+
+    const unsubscribe = onSnapshot(messagesRef, (snapshot) => {
+      const fetchedMessages = snapshot.docs.map((doc) => ({
+        id: doc.id,
+        ...doc.data(),
+      }));
+      setMessages(fetchedMessages);
+    });
+
+    return () => unsubscribe();
   }, []);
 
-  const handleSendMessage = () => {
+  const handleSendMessage = async () => {
+    const auth = getAuth();
+    const currentUser = auth.currentUser;
+
+    if (!currentUser) {
+      console.error("No authenticated user found.");
+      return;
+    }
+
+    const recipientId = "recipient_user_id"; // Placeholder for now
+
+    // Create or fetch chatroom
+    const chatroomsRef = collection(db, "chatrooms");
+    const newChatroomRef = await addDoc(chatroomsRef, {
+      participants: [currentUser.uid, recipientId],
+      createdAt: serverTimestamp(),
+    });
+
+    // Send the message
     if (newMessage.trim()) {
       const newMsg = {
-        sender: "Current User", // Placeholder sender name
-        recipients: ["John Doe"], // Placeholder recipient
-        timestamp: new Date().toISOString(),
+        sender: currentUser.displayName || "Anonymous",
+        senderId: currentUser.uid,
+        recipients: [recipientId],
+        timestamp: serverTimestamp(),
         message: newMessage,
-        senderAvatar: "https://i.pravatar.cc/150?img=3", // Placeholder avatar URL
+        senderAvatar: currentUser.photoURL || "https://i.pravatar.cc/150?img=3",
       };
 
-      // Add the new message to the messages list
-      setMessages([...messages, newMsg]);
-      setNewMessage(""); // Clear the input field
+      await addDoc(
+        collection(db, "chatrooms", newChatroomRef.id, "messages"),
+        newMsg
+      );
+      setNewMessage("");
     }
   };
 
@@ -109,25 +149,22 @@ export default function App() {
         className='input-container'
         sx={{ display: "flex", flexDirection: "column", height: "80vh" }}
       >
-        {/* Messages List with scrolling */}
         <DirectMessageList messages={messages} />
 
-        {/* Fixed Input Field at Bottom */}
         <Box
           sx={(theme) => ({
             position: "fixed",
             bottom: 0,
-            left: isDrawerOpen ? 240 : 0, // Adjust based on drawer state
-            width: isDrawerOpen ? "calc(100% - 240px)" : "100%", // Ensure correct width
+            left: isDrawerOpen ? 240 : 0,
+            width: isDrawerOpen ? "calc(100% - 240px)" : "100%",
             display: "flex",
             alignItems: "center",
             p: 2,
             backgroundColor: "white",
             zIndex: 1,
-
             [theme.breakpoints.down("sm")]: {
               left: 0,
-              width: "100%", // Full width on small screens
+              width: "100%",
             },
           })}
         >
@@ -152,4 +189,3 @@ export default function App() {
     </>
   );
 }
-
