@@ -118,7 +118,7 @@ export default function App() {
     const recipientId = "recipient_user_id"; // Placeholder for now
 
     // Create or fetch chatroom
-    const chatroomsRef = collection(db, "chatrooms");
+    const chatroomsRef = collection(db, "directmessage");
     const newChatroomRef = await addDoc(chatroomsRef, {
       participants: [currentUser.uid, recipientId],
       createdAt: serverTimestamp(),

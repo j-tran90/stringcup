@@ -67,12 +67,33 @@ function UserList() {
     fetchUsers(); // Call the function to fetch users
   }, []); // Empty dependency array to run this effect only once when component mounts
 
+  // Function to handle user selection
+  const handleUserSelect = async (userId) => {
+    try {
+      const directMessageRef = collection(db, "directmessage");
+      const querySnapshot = await getDocs(directMessageRef);
+
+      if (!querySnapshot.empty) {
+        console.log(`Direct message collection exists for user: ${userId}`);
+        // Additional logic can be added here
+      } else {
+        console.log(`Direct message collection does not exist for user: ${userId}`);
+        // Additional logic to create or handle the collection
+      }
+    } catch (error) {
+      console.error("Error checking direct message collection: ", error);
+    }
+  };
+
   return (
     <>
       <List>
         {users.map((user) => (
           <ListItem key={user.id} disablePadding>
-            <ListItemButton data-uid={user.id}>
+            <ListItemButton
+              data-uid={user.id}
+              onClick={() => handleUserSelect(user.id)} // Add click handler
+            >
               <Avatar
                 src={user.photoURL}
                 alt={user.name}
