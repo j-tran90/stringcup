@@ -92,8 +92,8 @@ export default function App() {
 
     if (!currentUser) return;
 
-    const chatroomId = "selected_chatroom_id"; // Replace with dynamic chatroom logic
-    const messagesRef = collection(db, "chatrooms", chatroomId, "messages");
+    const directMessageId = "selected_directmessage_id"; // Replace with dynamic chatroom logic
+    const messagesRef = collection(db, "directmessage", directMessageId, "messages");
 
     const unsubscribe = onSnapshot(messagesRef, (snapshot) => {
       const fetchedMessages = snapshot.docs.map((doc) => ({
@@ -106,25 +106,7 @@ export default function App() {
     return () => unsubscribe();
   }, []);
 
-  const handleSendMessage = async () => {
-    const auth = getAuth();
-    const currentUser = auth.currentUser;
-
-    if (!currentUser) {
-      console.error("No authenticated user found.");
-      return;
-    }
-
-    const recipientId = "recipient_user_id"; // Placeholder for now
-
-    // Create or fetch chatroom
-    const chatroomsRef = collection(db, "directmessage");
-    const newChatroomRef = await addDoc(chatroomsRef, {
-      participants: [currentUser.uid, recipientId],
-      createdAt: serverTimestamp(),
-    });
-
-    // Send the message
+  const handleSendMessage = () => {
     if (newMessage.trim()) {
       const newMsg = {
         sender: currentUser.displayName || "Anonymous",
@@ -136,7 +118,7 @@ export default function App() {
       };
 
       await addDoc(
-        collection(db, "chatrooms", newChatroomRef.id, "messages"),
+        collection(db, "directmessage", newChatroomRef.id, "messages"),
         newMsg
       );
       setNewMessage("");
