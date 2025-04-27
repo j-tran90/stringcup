@@ -106,7 +106,18 @@ export default function App() {
     return () => unsubscribe();
   }, []);
 
-  const handleSendMessage = () => {
+  const handleSendMessage = async () => {
+    const auth = getAuth();
+    const currentUser = auth.currentUser;
+
+    if (!currentUser) {
+      console.error("No user is currently authenticated.");
+      return;
+    }
+
+    const recipientId = "recipient_id_placeholder"; // Replace with actual recipient ID logic
+    const newChatroomRef = { id: "chatroom_id_placeholder" }; // Replace with actual chatroom reference logic
+
     if (newMessage.trim()) {
       const newMsg = {
         sender: currentUser.displayName || "Anonymous",
@@ -117,11 +128,15 @@ export default function App() {
         senderAvatar: currentUser.photoURL || "https://i.pravatar.cc/150?img=3",
       };
 
-      await addDoc(
-        collection(db, "directmessage", newChatroomRef.id, "messages"),
-        newMsg
-      );
-      setNewMessage("");
+      try {
+        await addDoc(
+          collection(db, "directmessage", newChatroomRef.id, "messages"),
+          newMsg
+        );
+        setNewMessage("");
+      } catch (error) {
+        console.error("Error sending message:", error);
+      }
     }
   };
 
