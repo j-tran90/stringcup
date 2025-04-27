@@ -92,8 +92,8 @@ export default function App() {
 
     if (!currentUser) return;
 
-    const directMessageId = "selected_directmessage_id"; // Replace with dynamic chatroom logic
-    const messagesRef = collection(db, "directmessage", directMessageId, "messages");
+    const chatroomId = "selected_chatroom_id"; // Replace with dynamic chatroom logic
+    const messagesRef = collection(db, "directmessage", chatroomId, "messages");
 
     const unsubscribe = onSnapshot(messagesRef, (snapshot) => {
       const fetchedMessages = snapshot.docs.map((doc) => ({
